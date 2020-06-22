@@ -1,0 +1,250 @@
+package com.kakaopay.assignment.controller.dto;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest
+@AutoConfigureMockMvc
+class PayRequestDtoTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private PayRequestDto payRequestDto;
+
+    @BeforeEach
+    void setUp() {
+        payRequestDto = PayRequestDto.builder()
+            .cardNo("9999999999")
+            .installmentMonths("12")
+            .validPeriod("0725")
+            .cvc("293")
+            .paymentAmount("1000000000")
+            .build();
+    }
+
+
+    @DisplayName("잘못된 카드번호 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "99999999.9",
+        "-123456789",
+        "문자열카드번호문자열카드번호",
+        "abcdefghijklmn",
+        "9",
+        "999999999",
+        "00000000000000000",
+    })
+    @NullAndEmptySource
+    void test_invalidCardNos(String cardNo) throws Exception {
+        payRequestDto.setCardNo(cardNo);
+
+        assertResult(status().isBadRequest());
+    }
+
+    @DisplayName("정상적인 카드번호 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "0000000000",
+        "9999999999999999",
+    })
+    void test_CardNos(String cardNo) throws Exception {
+        payRequestDto.setCardNo(cardNo);
+
+        assertResult(status().isOk());
+    }
+
+    @DisplayName("비정상적인 유효기간 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "12.1",
+        "00000",
+        "0099",
+        "-010",
+        "1300",
+        "129",
+        "010",
+        "abcd",
+        "한글변수",
+    })
+    @NullAndEmptySource
+    void test_invalidValidPeriod(String validPeriod) throws Exception {
+        payRequestDto.setValidPeriod(validPeriod);
+
+        assertResult(status().isBadRequest());
+    }
+
+    @DisplayName("정상적인 유효기간 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "0100",
+        "0199",
+        "0650",
+        "1200",
+        "1299",
+    })
+    void test_validPeriod(String validPeriod) throws Exception {
+        payRequestDto.setValidPeriod(validPeriod);
+
+        assertResult(status().isOk());
+    }
+
+
+    @DisplayName("비정상적인 cvc 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "0.0",
+        "-01",
+        "-99",
+        "99",
+        "0000",
+        "abc",
+        "한글임",
+    })
+    @NullAndEmptySource
+    void test_invalidCvc(String cvc) throws Exception {
+        payRequestDto.setCvc(cvc);
+
+        assertResult(status().isBadRequest());
+    }
+
+    @DisplayName("정상적인 cvc 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "000",
+        "999",
+    })
+    void test_validCvc(String cvc) throws Exception {
+        payRequestDto.setCvc(cvc);
+
+        assertResult(status().isOk());
+    }
+
+    @DisplayName("비정상적인 할부개월 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "1.",
+        "13",
+        "99",
+        "000",
+        "십이",
+    })
+    @NullAndEmptySource
+    void test_invalidInstallmentMonths(String installmentMonths) throws Exception {
+        payRequestDto.setInstallmentMonths(installmentMonths);
+
+        assertResult(status().isBadRequest());
+    }
+
+    @DisplayName("정상적인 할부개월 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "00",
+        "01",
+        "02",
+        "03",
+        "04",
+        "05",
+        "06",
+        "07",
+        "08",
+        "09",
+        "10",
+        "11",
+        "12",
+    })
+    void test_InstallmentMonths(String installmentMonths) throws Exception {
+        payRequestDto.setInstallmentMonths(installmentMonths);
+
+        assertResult(status().isOk());
+    }
+
+    @DisplayName("비정상적인 결제금액 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "-100",
+        "0",
+        "99",
+        "1000000001",
+        "10000000000",
+        "십억",
+    })
+    @NullAndEmptySource
+    void test_invalidPaymentAmount(String paymentAmount) throws Exception {
+        payRequestDto.setPaymentAmount(paymentAmount);
+
+        assertResult(status().isBadRequest());
+    }
+
+    @DisplayName("정상적인 결제금액 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "100",
+        "50000",
+        "999999999",
+        "1000000000",
+    })
+    void test_paymentAmount(String paymentAmount) throws Exception {
+        payRequestDto.setPaymentAmount(paymentAmount);
+
+        assertResult(status().isOk());
+    }
+
+    @DisplayName("비정상적인 vat 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "-0",
+        "-1",
+        "1.",
+        "1000000001",
+        "10000000000",
+        "십억",
+    })
+    void test_invalidVat(String vat) throws Exception {
+        payRequestDto.setVat(vat);
+
+        assertResult(status().isBadRequest());
+    }
+
+    @DisplayName("정상적인 vat 테스트")
+    @ParameterizedTest(name = "{index} {displayName} for {0}")
+    @ValueSource(strings = {
+        "0",
+        "1",
+        "100",
+        "50000",
+        "999999999",
+        "1000000000",
+    })
+    @NullAndEmptySource
+    void test_Vat(String vat) throws Exception {
+        payRequestDto.setVat(vat);
+
+        assertResult(status().isOk());
+    }
+
+    private void assertResult(ResultMatcher resultMatcher) throws Exception {
+        mockMvc.perform(post("/pay")
+                            .contentType(MediaType.APPLICATION_JSON_VALUE)
+                            .content(objectMapper.writeValueAsString(payRequestDto)))
+            .andDo(print())
+            .andExpect(resultMatcher);
+    }
+}
