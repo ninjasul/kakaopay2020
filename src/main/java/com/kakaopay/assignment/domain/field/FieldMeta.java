@@ -1,11 +1,11 @@
-package com.kakaopay.assignment.controller.domain.field;
+package com.kakaopay.assignment.domain.field;
 
 import lombok.Getter;
 
-import static com.kakaopay.assignment.controller.domain.field.FieldAlignment.LEFT;
-import static com.kakaopay.assignment.controller.domain.field.FieldAlignment.RIGHT;
-import static com.kakaopay.assignment.controller.domain.field.FieldType.NUMBER;
-import static com.kakaopay.assignment.controller.domain.field.FieldType.STRING;
+import static com.kakaopay.assignment.domain.field.FieldAlignment.LEFT;
+import static com.kakaopay.assignment.domain.field.FieldAlignment.RIGHT;
+import static com.kakaopay.assignment.domain.field.FieldType.NUMBER;
+import static com.kakaopay.assignment.domain.field.FieldType.STRING;
 
 @Getter
 public enum FieldMeta {

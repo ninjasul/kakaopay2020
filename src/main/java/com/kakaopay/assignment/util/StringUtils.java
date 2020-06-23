@@ -1,4 +1,4 @@
-package com.kakaopay.util;
+package com.kakaopay.assignment.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,14 +56,6 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         }
 
         return "";
-    }
-
-    public static boolean isEmpty(String target) {
-        return Objects.isNull(target) || target.length() <= 0;
-    }
-
-    public static boolean isNotEmpty(String target) {
-        return !isEmpty(target);
     }
 
     public static int toInt(String str) {

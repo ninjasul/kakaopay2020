@@ -1,0 +1,21 @@
+spring:
+  h2.console.enabled: true
+
+  datasource:
+    username: sa
+    password:
+    url: jdbc:h2:mem:payment
+    driver-class-name: org.h2.Driver
+    hikari.jdbc-url: jdbc:h2:mem:payment
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.H2Dialect
+
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type.descriptor.sql.BasicBinder: TRACE

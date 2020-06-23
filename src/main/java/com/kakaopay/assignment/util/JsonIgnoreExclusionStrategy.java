@@ -1,4 +1,4 @@
-package com.kakaopay.util;
+package com.kakaopay.assignment.util;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.ExclusionStrategy;

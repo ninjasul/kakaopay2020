@@ -1,7 +1,7 @@
-package com.kakaopay.util;
+package com.kakaopay.assignment.util;
 
-import com.kakaopay.assignment.controller.domain.field.FieldInfo;
-import com.kakaopay.assignment.controller.domain.field.FieldMeta;
+import com.kakaopay.assignment.domain.field.FieldInfo;
+import com.kakaopay.assignment.domain.field.FieldMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.kakaopay.assignment.controller.domain.field.FieldAlignment.LEFT;
+import static com.kakaopay.assignment.domain.field.FieldAlignment.LEFT;
 
 @Slf4j
 public class FieldUtil {
@@ -22,9 +22,18 @@ public class FieldUtil {
 
         return Arrays.stream(declaredFields)
             .filter(field -> field.isAnnotationPresent(FieldInfo.class))
+            .map(FieldUtil::setAccessible)
             .map(field -> getValue(instance, field, field.getAnnotation(FieldInfo.class)))
             .map(String::valueOf)
             .collect(Collectors.joining());
+    }
+
+    private static Field setAccessible(Field field) {
+        if (!field.isAccessible()) {
+            field.setAccessible(true);
+        }
+
+        return field;
     }
 
     private static String getValue(Object instance, Field field, FieldInfo fieldInfo) {
@@ -41,6 +50,17 @@ public class FieldUtil {
         catch (IllegalAccessException e) {
             log.error(e.getMessage());
             return "";
+        }
+    }
+
+    public static int getLength(Object instance, Field field) {
+        try {
+            Object value = field.get(instance);
+            return String.valueOf(value).length();
+        }
+        catch (IllegalAccessException e) {
+            log.error(e.getMessage());
+            return 0;
         }
     }
 }

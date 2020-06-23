@@ -1,4 +1,4 @@
-package com.kakaopay.assignment.controller.domain.field;
+package com.kakaopay.assignment.domain.field;
 
 public enum FieldAlignment {
     LEFT,

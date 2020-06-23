@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,10 +34,10 @@ class PayRequestDtoTest {
     void setUp() {
         payRequestDto = PayRequestDto.builder()
             .cardNo("9999999999")
-            .installmentMonths("12")
+            .installmentMonths(12)
             .validPeriod("0725")
             .cvc("293")
-            .paymentAmount("1000000000")
+            .paymentAmount(1000000000)
             .build();
     }
 
@@ -139,15 +140,13 @@ class PayRequestDtoTest {
 
     @DisplayName("비정상적인 할부개월 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
-    @ValueSource(strings = {
-        "1.",
-        "13",
-        "99",
-        "000",
-        "십이",
+    @ValueSource(ints = {
+        -1,
+        13,
+        99,
     })
-    @NullAndEmptySource
-    void test_invalidInstallmentMonths(String installmentMonths) throws Exception {
+    @NullSource
+    void test_invalidInstallmentMonths(Integer installmentMonths) throws Exception {
         payRequestDto.setInstallmentMonths(installmentMonths);
 
         assertResult(status().isBadRequest());
@@ -155,22 +154,22 @@ class PayRequestDtoTest {
 
     @DisplayName("정상적인 할부개월 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
-    @ValueSource(strings = {
-        "00",
-        "01",
-        "02",
-        "03",
-        "04",
-        "05",
-        "06",
-        "07",
-        "08",
-        "09",
-        "10",
-        "11",
-        "12",
+    @ValueSource(ints = {
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
     })
-    void test_InstallmentMonths(String installmentMonths) throws Exception {
+    void test_InstallmentMonths(int installmentMonths) throws Exception {
         payRequestDto.setInstallmentMonths(installmentMonths);
 
         assertResult(status().isOk());
@@ -178,16 +177,15 @@ class PayRequestDtoTest {
 
     @DisplayName("비정상적인 결제금액 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
-    @ValueSource(strings = {
-        "-100",
-        "0",
-        "99",
-        "1000000001",
-        "10000000000",
-        "십억",
+    @ValueSource(ints = {
+        -100,
+        0,
+        99,
+        1000000001,
+        2099999999
     })
-    @NullAndEmptySource
-    void test_invalidPaymentAmount(String paymentAmount) throws Exception {
+    @NullSource
+    void test_invalidPaymentAmount(Integer paymentAmount) throws Exception {
         payRequestDto.setPaymentAmount(paymentAmount);
 
         assertResult(status().isBadRequest());
@@ -195,13 +193,13 @@ class PayRequestDtoTest {
 
     @DisplayName("정상적인 결제금액 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
-    @ValueSource(strings = {
-        "100",
-        "50000",
-        "999999999",
-        "1000000000",
+    @ValueSource(ints = {
+        100,
+        50000,
+        999999999,
+        1000000000,
     })
-    void test_paymentAmount(String paymentAmount) throws Exception {
+    void test_paymentAmount(int paymentAmount) throws Exception {
         payRequestDto.setPaymentAmount(paymentAmount);
 
         assertResult(status().isOk());
@@ -209,15 +207,13 @@ class PayRequestDtoTest {
 
     @DisplayName("비정상적인 vat 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
-    @ValueSource(strings = {
-        "-0",
-        "-1",
-        "1.",
-        "1000000001",
-        "10000000000",
-        "십억",
+    @ValueSource(ints = {
+        -1,
+        -5000,
+        1000000001,
+        2099999999,
     })
-    void test_invalidVat(String vat) throws Exception {
+    void test_invalidVat(int vat) throws Exception {
         payRequestDto.setVat(vat);
 
         assertResult(status().isBadRequest());
@@ -225,16 +221,16 @@ class PayRequestDtoTest {
 
     @DisplayName("정상적인 vat 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
-    @ValueSource(strings = {
-        "0",
-        "1",
-        "100",
-        "50000",
-        "999999999",
-        "1000000000",
+    @ValueSource(ints = {
+        0,
+        1,
+        100,
+        50000,
+        999999999,
+        1000000000,
     })
-    @NullAndEmptySource
-    void test_Vat(String vat) throws Exception {
+    @NullSource
+    void test_Vat(Integer vat) throws Exception {
         payRequestDto.setVat(vat);
 
         assertResult(status().isOk());

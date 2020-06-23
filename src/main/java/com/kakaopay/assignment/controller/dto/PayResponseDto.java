@@ -1,18 +1,24 @@
 package com.kakaopay.assignment.controller.dto;
 
+import com.kakaopay.assignment.entity.PaymentHistory;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
-public class PayResponseDto extends PayFailResponseDto {
-    private String managementNumber;
-    private String header;
-    private String body;
+public class PayResponseDto {
+    private final String mgmtNo;
+    private final String paymentData;
 
-    public PayResponseDto(String managementNumber, String header, String body) {
-        this.managementNumber = managementNumber;
-        this.header = header;
-        this.body = body;
+    @Builder
+    public PayResponseDto(String mgmtNo, String paymentData) {
+        this.mgmtNo = mgmtNo;
+        this.paymentData = paymentData;
+    }
+
+    public static PayResponseDto from(PaymentHistory paymentHistory) {
+        return PayResponseDto.builder()
+            .mgmtNo(paymentHistory.getMgmtNo())
+            .paymentData(paymentHistory.getData())
+            .build();
     }
 }

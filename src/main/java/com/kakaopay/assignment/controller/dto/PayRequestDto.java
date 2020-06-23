@@ -1,6 +1,5 @@
 package com.kakaopay.assignment.controller.dto;
 
-import com.kakaopay.util.StringUtils;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +8,7 @@ import javax.validation.constraints.*;
 
 @Getter
 @Setter
-public class PayRequestDto {
+public class PayRequestDto implements VatCalculable {
 
     @NotEmpty
     @Min(0)
@@ -26,36 +25,33 @@ public class PayRequestDto {
     @Pattern(regexp ="^[0-9]{3}$")
     private String cvc;
 
-    @NotEmpty
+    @NotNull
     @Min(0)
     @Max(12)
-    @Pattern(regexp = "^[0-9]{1,2}$")
-    private String installmentMonths;
+    private Integer installmentMonths;
 
-    @NotEmpty
+    @NotNull
     @Min(100)
     @Max(1000000000)
-    @Pattern(regexp = "^[0-9]{3,10}$")
-    private String paymentAmount;
+    private Integer paymentAmount;
 
     @Min(0)
     @Max(1000000000)
-    @Pattern(regexp = "^[0-9]{1,10}$")
-    private String vat;
+    private Integer vat;
 
     @Builder
     public PayRequestDto(
         String cardNo,
         String validPeriod,
         String cvc,
-        String installmentMonths,
-        String paymentAmount,
-        String vat) {
+        Integer installmentMonths,
+        Integer paymentAmount,
+        Integer vat) {
         this.cardNo = cardNo;
         this.validPeriod = validPeriod;
         this.cvc = cvc;
         this.installmentMonths = installmentMonths;
         this.paymentAmount = paymentAmount;
-        this.vat = StringUtils.getOrDefault(vat, null);
+        this.vat = getCalculatedVat(paymentAmount, vat);
     }
 }
