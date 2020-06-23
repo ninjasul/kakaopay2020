@@ -2,7 +2,6 @@ package com.kakaopay.assignment.domain;
 
 import com.kakaopay.assignment.domain.field.FieldInfo;
 import com.kakaopay.assignment.domain.field.RequestType;
-import com.kakaopay.assignment.entity.PaymentHistory;
 import com.kakaopay.assignment.util.FieldUtil;
 import com.kakaopay.assignment.util.ManagementNumberUtil;
 import lombok.Builder;
@@ -11,15 +10,16 @@ import lombok.Getter;
 import static com.kakaopay.assignment.domain.field.FieldMeta.NUMBER_RIGHT;
 import static com.kakaopay.assignment.domain.field.FieldMeta.STRING_LEFT;
 
-@Getter
 public class Header implements LengthGettable {
     @FieldInfo(meta = NUMBER_RIGHT, maxSize = 4)
     @LengthExcluded
     private int length;
 
+    @Getter
     @FieldInfo(meta = STRING_LEFT, maxSize = 10)
     private RequestType requestType;
 
+    @Getter
     @FieldInfo(meta = STRING_LEFT, maxSize = 20)
     private String mgmtNo;
 
@@ -30,7 +30,7 @@ public class Header implements LengthGettable {
             .build();
     }
 
-    public static Header from(PaymentHistory paymentHistory) {
+    public static Header newCancelHeader() {
         return Header.builder()
             .requestType(RequestType.CANCEL)
             .mgmtNo(ManagementNumberUtil.generate())

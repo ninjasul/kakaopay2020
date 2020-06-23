@@ -1,6 +1,5 @@
 package com.kakaopay.assignment.util;
 
-import com.kakaopay.assignment.domain.LengthGettable;
 import com.kakaopay.assignment.domain.field.FieldInfo;
 import com.kakaopay.assignment.domain.field.FieldMeta;
 import lombok.extern.slf4j.Slf4j;
@@ -43,10 +42,10 @@ public class FieldUtil {
             FieldMeta meta = fieldInfo.meta();
 
             if (LEFT.equals(meta.getAlignment())) {
-                return StringUtils.leftPad(String.valueOf(value), fieldInfo.maxSize(), meta.getPadChar());
+                return StringUtils.rightPad(String.valueOf(value), fieldInfo.maxSize(), meta.getPadChar());
             }
 
-            return StringUtils.rightPad(String.valueOf(value), fieldInfo.maxSize(), meta.getPadChar());
+            return StringUtils.leftPad(String.valueOf(value), fieldInfo.maxSize(), meta.getPadChar());
         }
         catch (IllegalAccessException e) {
             log.error(e.getMessage());

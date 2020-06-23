@@ -32,16 +32,20 @@ public class PaymentHistoryRepositoryImpl extends QuerydslRepositorySupport impl
     public PaymentHistory findByMgmtNo(String mgmtNo) {
         return queryFactory.selectFrom($)
             .where(QPaymentHistory.paymentHistory.mgmtNo.eq(mgmtNo))
-            .fetchFirst();
+            .fetchOne();
     }
 
     @Override
-    public long cancel(String mgmtNo, String cancelAmount, String vat) {
-        return queryFactory.update($)
-            .where($.mgmtNo.eq(mgmtNo))
-            .set($.status, PaymentStatus.COMPLETELY_CANCELLED)
-            .set($.updatedAt, LocalDateTime.now())
-            .execute();
+    public PaymentHistory findCancellableByMgmtNo(String mgmtNo) {
+        return queryFactory.selectFrom($)
+            .where(QPaymentHistory.paymentHistory.mgmtNo.eq(mgmtNo)
+                    .and(
+                        QPaymentHistory.paymentHistory.status.eq(PaymentStatus.PAID)
+                            .or(QPaymentHistory.paymentHistory.status.eq(PaymentStatus.PARTIALLY_CANCELLED)
+                    )
+                )
+            )
+            .fetchOne();
     }
 
     @Override

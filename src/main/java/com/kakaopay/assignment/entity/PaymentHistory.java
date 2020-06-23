@@ -3,6 +3,7 @@ package com.kakaopay.assignment.entity;
 import com.kakaopay.assignment.controller.dto.CancelRequestDto;
 import com.kakaopay.assignment.domain.Body;
 import com.kakaopay.assignment.domain.Header;
+import com.kakaopay.assignment.domain.Protocol;
 import com.kakaopay.assignment.domain.field.PaymentStatus;
 import com.kakaopay.assignment.domain.field.RequestType;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(
@@ -53,12 +55,10 @@ public class PaymentHistory {
     @Column(nullable = false)
     private Integer installmentMonths;
 
-    @Column(nullable = false)
     private Integer paidAmount;
 
     private Integer cancelledAmount;
 
-    @Column(nullable = false)
     private Integer paidVat;
 
     private Integer cancelledVat;
@@ -69,11 +69,9 @@ public class PaymentHistory {
     @Column(nullable = false, length = 450)
     private String data;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
@@ -83,20 +81,17 @@ public class PaymentHistory {
     @Transient
     private Body body;
 
-    public static PaymentHistory from(Body body, Header header) {
+    public static PaymentHistory from(Protocol protocol, RequestType requestType) {
         return new PaymentHistory(
-            header.getMgmtNo(),
-            body.getCardNo(),
-            body.getValidPeriod(),
-            body.getCvc(),
-            body.getInstallmentMonths(),
-            body.getAmount(),
-            0,
-            body.getVat(),
-            0,
-            RequestType.PAYMENT,
-            PaymentStatus.PAID,
-            header.toString() + body.toString()
+            protocol.getMgmtNo(),
+            protocol.getCardNo(),
+            protocol.getValidPeriod(),
+            protocol.getCvc(),
+            protocol.getInstallmentMonths(),
+            requestType,
+            protocol.getAmount(),
+            protocol.getVat(),
+            protocol.toString()
         );
     }
 
@@ -106,12 +101,9 @@ public class PaymentHistory {
         String validPeriod,
         String cvc,
         Integer installmentMonths,
-        Integer paidAmount,
-        Integer cancelledAmount,
-        Integer paidVat,
-        Integer cancelledVat,
         RequestType requestType,
-        PaymentStatus status,
+        Integer amount,
+        Integer vat,
         String data
     ) {
         this.mgmtNo = mgmtNo;
@@ -119,12 +111,23 @@ public class PaymentHistory {
         this.validPeriod = validPeriod;
         this.cvc = cvc;
         this.installmentMonths = installmentMonths;
-        this.paidAmount = paidAmount;
-        this.cancelledAmount = cancelledAmount;
-        this.paidVat = paidVat;
-        this.cancelledVat = cancelledVat;
         this.requestType = requestType;
-        this.status = status;
+
+        if (RequestType.PAYMENT.equals(requestType)) {
+            this.paidAmount = amount;
+            this.paidVat = vat;
+            this.cancelledAmount = 0;
+            this.cancelledVat = 0;
+            this.status = PaymentStatus.PAID;
+        }
+        else {
+            this.paidAmount = 0;
+            this.paidVat = 0;
+            this.cancelledAmount = amount;
+            this.cancelledVat = vat;
+            this.status = PaymentStatus.CANCEL_REQUESTED;
+        }
+
         this.data = data;
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
@@ -136,15 +139,20 @@ public class PaymentHistory {
     }
 
     public boolean canCancel(CancelRequestDto cancelRequestDto) {
-        return canCancelAmount(cancelRequestDto.getCancelAmount()) && canCancelVat(cancelRequestDto.getVat());
+        return canCancelAmount(cancelRequestDto.getCancelAmount()) && canCancelVat(cancelRequestDto.getCancelAmount(), cancelRequestDto.getVat());
     }
 
     private boolean canCancelAmount(Integer cancelRequestAmount) {
         return getRemainingAmount() > 0 && cancelRequestAmount <= getRemainingAmount();
     }
 
-    private boolean canCancelVat(Integer cancelRequestVat) {
-        return getRemainingVat() > 0 && cancelRequestVat <= getRemainingVat();
+    private boolean canCancelVat(Integer cancelRequestAmount, Integer cancelRequestVat) {
+        if (cancelRequestAmount == getRemainingAmount() &&
+            cancelRequestVat < getRemainingVat()) {
+            return false;
+        }
+
+        return getRemainingVat() >= 0 && cancelRequestVat <= getRemainingVat();
     }
 
     public void cancel(CancelRequestDto cancelRequestDto) {
@@ -157,13 +165,15 @@ public class PaymentHistory {
         else {
             status = PaymentStatus.PARTIALLY_CANCELLED;
         }
+
+        updatedAt = LocalDateTime.now();
     }
 
-    private int getRemainingAmount() {
+    public int getRemainingAmount() {
         return paidAmount - cancelledAmount;
     }
 
-    private int getRemainingVat() {
+    public int getRemainingVat() {
         return paidVat - cancelledVat;
     }
 }

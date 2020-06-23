@@ -10,7 +10,7 @@ public interface PaymentHistoryService {
 
     FoundPaymentDto findByMgmtNo(String mgmtNo);
 
-    PayResponseDto cancel(CancelRequestDto cancelRequestDto);
+    PayResponseDto cancel(CancelRequestDto cancelRequestDto) throws Exception;
 
     PayResponseDto insert(PayRequestDto paymentRequestDto);
 }

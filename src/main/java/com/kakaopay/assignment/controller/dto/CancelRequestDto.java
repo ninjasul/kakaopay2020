@@ -6,12 +6,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.*;
-import java.util.Objects;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class CancelRequestDto {
+public class CancelRequestDto implements VatCalculable {
     @NotEmpty
     @Size(min = 20, max = 20)
     private String mgmtNo;
@@ -32,6 +31,6 @@ public class CancelRequestDto {
         Integer vat) {
         this.mgmtNo = mgmtNo;
         this.cancelAmount = cancelAmount;
-        this.vat = Objects.isNull(vat) ? 0 : vat;
+        this.vat = vat;
     }
 }

@@ -44,7 +44,7 @@ public class PaymentController {
         consumes = APPLICATION_JSON_VALUE,
         produces = APPLICATION_JSON_VALUE
     )
-    public PayResponseDto cancel(@Validated @RequestBody CancelRequestDto request, BindingResult bindingResult) {
+    public PayResponseDto cancel(@Validated @RequestBody CancelRequestDto request, BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
             logBindingResultError(bindingResult);
             throw new IllegalArgumentException();

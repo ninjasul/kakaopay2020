@@ -1,6 +1,6 @@
 package com.kakaopay.assignment.controller.dto;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kakaopay.assignment.controller.BaseTest;
 import com.kakaopay.assignment.service.PaymentHistoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -10,27 +10,14 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
 import javax.transaction.Transactional;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
 @Transactional
-class CancelRequestDtoTest {
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class CancelRequestDtoTest extends BaseTest {
+    private static final String URL = "/cancel";
 
     @Autowired
     private PaymentHistoryService service;
@@ -46,13 +33,14 @@ class CancelRequestDtoTest {
             .validPeriod("0725")
             .cvc("293")
             .paymentAmount(1000000000)
+            .vat(null)
             .build();
 
         PayResponseDto payResponseDto = service.insert(payRequestDto);
 
         cancelRequestDto = CancelRequestDto.builder()
             .mgmtNo(payResponseDto.getMgmtNo())
-            .cancelAmount(1000000000)
+            .cancelAmount(50000000)
             .build();
     }
 
@@ -67,13 +55,13 @@ class CancelRequestDtoTest {
     void test_invalidMgmtNo(String mgmtNo) throws Exception {
         cancelRequestDto.setMgmtNo(mgmtNo);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, cancelRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 관리번호 테스트")
     @Test
     void test_paymentAmount() throws Exception {
-        assertResult(status().isOk());
+        assertPostResult(URL, cancelRequestDto, status().isOk());
     }
 
     @DisplayName("비정상적인 취소금액 테스트")
@@ -89,7 +77,7 @@ class CancelRequestDtoTest {
     void test_invalidCancelAmount(Integer cancelAmount) throws Exception {
         cancelRequestDto.setCancelAmount(cancelAmount);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, cancelRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 취소금액 테스트")
@@ -107,7 +95,7 @@ class CancelRequestDtoTest {
     void test_paymentAmount(Integer cancelAmount) throws Exception {
         cancelRequestDto.setCancelAmount(cancelAmount);
 
-        assertResult(status().isOk());
+        assertPostResult(URL, cancelRequestDto, status().isOk());
     }
 
     @DisplayName("비정상적인 vat 테스트")
@@ -122,7 +110,7 @@ class CancelRequestDtoTest {
     void test_invalidVat(Integer vat) throws Exception {
         cancelRequestDto.setVat(vat);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, cancelRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 vat 테스트")
@@ -137,14 +125,6 @@ class CancelRequestDtoTest {
     void test_Vat(Integer vat) throws Exception {
         cancelRequestDto.setVat(vat);
 
-        assertResult(status().isOk());
-    }
-
-    private void assertResult(ResultMatcher resultMatcher) throws Exception {
-        mockMvc.perform(post("/cancel")
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .content(objectMapper.writeValueAsString(cancelRequestDto)))
-            .andDo(print())
-            .andExpect(resultMatcher);
+        assertPostResult(URL, cancelRequestDto, status().isOk());
     }
 }

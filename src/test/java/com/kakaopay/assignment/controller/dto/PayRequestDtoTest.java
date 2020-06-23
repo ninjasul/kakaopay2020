@@ -1,32 +1,17 @@
 package com.kakaopay.assignment.controller.dto;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kakaopay.assignment.controller.BaseTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultMatcher;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class PayRequestDtoTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
+class PayRequestDtoTest extends BaseTest {
+    private static final String URL = "/pay";
 
     private PayRequestDto payRequestDto;
 
@@ -56,7 +41,7 @@ class PayRequestDtoTest {
     void test_invalidCardNos(String cardNo) throws Exception {
         payRequestDto.setCardNo(cardNo);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, payRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 카드번호 테스트")
@@ -68,7 +53,7 @@ class PayRequestDtoTest {
     void test_CardNos(String cardNo) throws Exception {
         payRequestDto.setCardNo(cardNo);
 
-        assertResult(status().isOk());
+        assertPostResult(URL, payRequestDto, status().isOk());
     }
 
     @DisplayName("비정상적인 유효기간 테스트")
@@ -88,7 +73,7 @@ class PayRequestDtoTest {
     void test_invalidValidPeriod(String validPeriod) throws Exception {
         payRequestDto.setValidPeriod(validPeriod);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, payRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 유효기간 테스트")
@@ -103,7 +88,7 @@ class PayRequestDtoTest {
     void test_validPeriod(String validPeriod) throws Exception {
         payRequestDto.setValidPeriod(validPeriod);
 
-        assertResult(status().isOk());
+        assertPostResult(URL, payRequestDto, status().isOk());
     }
 
 
@@ -122,7 +107,7 @@ class PayRequestDtoTest {
     void test_invalidCvc(String cvc) throws Exception {
         payRequestDto.setCvc(cvc);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, payRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 cvc 테스트")
@@ -134,7 +119,7 @@ class PayRequestDtoTest {
     void test_validCvc(String cvc) throws Exception {
         payRequestDto.setCvc(cvc);
 
-        assertResult(status().isOk());
+        assertPostResult(URL, payRequestDto, status().isOk());
     }
 
     @DisplayName("비정상적인 할부개월 테스트")
@@ -148,7 +133,7 @@ class PayRequestDtoTest {
     void test_invalidInstallmentMonths(Integer installmentMonths) throws Exception {
         payRequestDto.setInstallmentMonths(installmentMonths);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, payRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 할부개월 테스트")
@@ -171,7 +156,7 @@ class PayRequestDtoTest {
     void test_InstallmentMonths(int installmentMonths) throws Exception {
         payRequestDto.setInstallmentMonths(installmentMonths);
 
-        assertResult(status().isOk());
+        assertPostResult(URL, payRequestDto, status().isOk());
     }
 
     @DisplayName("비정상적인 결제금액 테스트")
@@ -187,7 +172,7 @@ class PayRequestDtoTest {
     void test_invalidPaymentAmount(Integer paymentAmount) throws Exception {
         payRequestDto.setPaymentAmount(paymentAmount);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, payRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 결제금액 테스트")
@@ -201,7 +186,7 @@ class PayRequestDtoTest {
     void test_paymentAmount(int paymentAmount) throws Exception {
         payRequestDto.setPaymentAmount(paymentAmount);
 
-        assertResult(status().isOk());
+        assertPostResult(URL, payRequestDto, status().isOk());
     }
 
     @DisplayName("비정상적인 vat 테스트")
@@ -215,7 +200,7 @@ class PayRequestDtoTest {
     void test_invalidVat(int vat) throws Exception {
         payRequestDto.setVat(vat);
 
-        assertResult(status().isBadRequest());
+        assertPostResult(URL, payRequestDto, status().isBadRequest());
     }
 
     @DisplayName("정상적인 vat 테스트")
@@ -232,14 +217,6 @@ class PayRequestDtoTest {
     void test_Vat(Integer vat) throws Exception {
         payRequestDto.setVat(vat);
 
-        assertResult(status().isOk());
-    }
-
-    private void assertResult(ResultMatcher resultMatcher) throws Exception {
-        mockMvc.perform(post("/pay")
-                            .contentType(MediaType.APPLICATION_JSON_VALUE)
-                            .content(objectMapper.writeValueAsString(payRequestDto)))
-            .andDo(print())
-            .andExpect(resultMatcher);
+        assertPostResult(URL, payRequestDto, status().isOk());
     }
 }
