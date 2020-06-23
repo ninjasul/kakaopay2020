@@ -7,6 +7,7 @@ import com.kakaopay.assignment.domain.field.PaymentStatus;
 import com.kakaopay.assignment.domain.field.RequestType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -27,6 +28,7 @@ import java.time.LocalDateTime;
 )
 @NoArgsConstructor
 @Getter
+@Slf4j
 public class PaymentHistory {
 
     @Id
@@ -92,7 +94,8 @@ public class PaymentHistory {
             0,
             body.getVat(),
             0,
-            PaymentStatus.PAYMENT,
+            RequestType.PAYMENT,
+            PaymentStatus.PAID,
             header.toString() + body.toString()
         );
     }
@@ -107,6 +110,7 @@ public class PaymentHistory {
         Integer cancelledAmount,
         Integer paidVat,
         Integer cancelledVat,
+        RequestType requestType,
         PaymentStatus status,
         String data
     ) {
@@ -119,6 +123,7 @@ public class PaymentHistory {
         this.cancelledAmount = cancelledAmount;
         this.paidVat = paidVat;
         this.cancelledVat = cancelledVat;
+        this.requestType = requestType;
         this.status = status;
         this.data = data;
         this.createdAt = LocalDateTime.now();
@@ -126,7 +131,7 @@ public class PaymentHistory {
     }
 
     public boolean isCancelled() {
-        return PaymentStatus.CANCEL.equals(status) ||
+        return PaymentStatus.COMPLETELY_CANCELLED.equals(status) ||
             cancelledAmount >= paidAmount;
     }
 
@@ -147,10 +152,10 @@ public class PaymentHistory {
         cancelledVat += Math.min(cancelRequestDto.getVat(), getRemainingVat());
 
         if (cancelledAmount.equals(paidAmount)) {
-            status = PaymentStatus.CANCEL;
+            status = PaymentStatus.COMPLETELY_CANCELLED;
         }
         else {
-            status = PaymentStatus.PARTIAL_CANCEL;
+            status = PaymentStatus.PARTIALLY_CANCELLED;
         }
     }
 

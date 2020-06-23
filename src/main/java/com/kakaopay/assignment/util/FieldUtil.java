@@ -1,5 +1,6 @@
 package com.kakaopay.assignment.util;
 
+import com.kakaopay.assignment.domain.LengthGettable;
 import com.kakaopay.assignment.domain.field.FieldInfo;
 import com.kakaopay.assignment.domain.field.FieldMeta;
 import lombok.extern.slf4j.Slf4j;

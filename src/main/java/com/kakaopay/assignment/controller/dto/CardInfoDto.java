@@ -1,6 +1,5 @@
 package com.kakaopay.assignment.controller.dto;
 
-import com.kakaopay.assignment.util.Aes256Cipher;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,9 +22,5 @@ public class CardInfoDto {
         this.cardNo = cardNo;
         this.validPeriod = validPeriod;
         this.cvc = cvc;
-    }
-
-    public String toEncryptedString() {
-        return Aes256Cipher.encryptCardInfo(cardNo, validPeriod, cvc);
     }
 }

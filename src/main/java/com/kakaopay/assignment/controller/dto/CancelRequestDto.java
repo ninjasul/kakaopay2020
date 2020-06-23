@@ -3,26 +3,26 @@ package com.kakaopay.assignment.controller.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.validation.constraints.*;
 import java.util.Objects;
 
 @Getter
+@Setter
 @NoArgsConstructor
 public class CancelRequestDto {
     @NotEmpty
     @Size(min = 20, max = 20)
     private String mgmtNo;
 
-    @NotEmpty
+    @NotNull
     @Min(1)
     @Max(1000000000)
-    @Pattern(regexp = "^[0-9]{1,10}$")
     private Integer cancelAmount;
 
-    @Min(1)
+    @Min(0)
     @Max(1000000000)
-    @Pattern(regexp = "^[0-9]{1,10}$")
     private Integer vat;
 
     @Builder

@@ -1,8 +1,8 @@
 package com.kakaopay.assignment.domain.field;
 
 public enum PaymentStatus {
-    PAYMENT,
-    PARTIAL_CANCEL,
-    CANCEL,
+    PAID,
+    PARTIALLY_CANCELLED,
+    COMPLETELY_CANCELLED,
     ;
 }

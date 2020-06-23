@@ -41,7 +41,6 @@ class PayRequestDtoTest {
             .build();
     }
 
-
     @DisplayName("잘못된 카드번호 테스트")
     @ParameterizedTest(name = "{index} {displayName} for {0}")
     @ValueSource(strings = {

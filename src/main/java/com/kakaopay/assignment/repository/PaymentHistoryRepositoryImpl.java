@@ -39,7 +39,7 @@ public class PaymentHistoryRepositoryImpl extends QuerydslRepositorySupport impl
     public long cancel(String mgmtNo, String cancelAmount, String vat) {
         return queryFactory.update($)
             .where($.mgmtNo.eq(mgmtNo))
-            .set($.status, PaymentStatus.CANCEL)
+            .set($.status, PaymentStatus.COMPLETELY_CANCELLED)
             .set($.updatedAt, LocalDateTime.now())
             .execute();
     }

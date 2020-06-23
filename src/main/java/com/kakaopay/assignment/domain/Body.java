@@ -2,7 +2,6 @@ package com.kakaopay.assignment.domain;
 
 import com.kakaopay.assignment.controller.dto.PayRequestDto;
 import com.kakaopay.assignment.domain.field.FieldInfo;
-import com.kakaopay.assignment.entity.PaymentHistory;
 import com.kakaopay.assignment.util.Aes256Cipher;
 import com.kakaopay.assignment.util.FieldUtil;
 import lombok.Builder;
@@ -49,18 +48,6 @@ public class Body implements LengthGettable {
             .amount(dto.getPaymentAmount())
             .vat(dto.getVat())
             .orgMgmtNo("")
-            .build();
-    }
-
-    public static Body from(PaymentHistory paymentHistory) {
-        return Body.builder()
-            .cardNo(paymentHistory.getCardNo())
-            .installmentMonths(paymentHistory.getInstallmentMonths())
-            .validPeriod(paymentHistory.getValidPeriod())
-            .cvc(paymentHistory.getCvc())
-            .amount(paymentHistory.getPaidAmount())
-            .vat(paymentHistory.getPaidVat())
-            .orgMgmtNo(paymentHistory.getMgmtNo())
             .build();
     }
 
