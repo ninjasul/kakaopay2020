@@ -27,7 +27,9 @@
       
     - 결제 데이터 조회: 
       - 메소드: POST       
-      - URL: http://localhost:8080/find/xg8Lf8ak0PCPPtHLZe9o
+      - URL: http://localhost:8080/find/{mgmtNo}
+      - URL 예)
+        - http://localhost:8080/find/xg8Lf8ak0PCPPtHLZe9o
     
 * DB 접속 방법
     - 접속 주소: http://localhost:8080/h2-console/
