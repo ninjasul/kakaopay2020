@@ -9,10 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @SpringBootTest
@@ -27,8 +26,8 @@ public class BaseTest {
 
     protected <T> ResultActions assertPostResult(String url, T dto, ResultMatcher resultMatcher) throws Exception {
         return mockMvc.perform(post(url)
-                                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                                .content(objectMapper.writeValueAsString(dto)))
+                                   .contentType(MediaType.APPLICATION_JSON_VALUE)
+                                   .content(objectMapper.writeValueAsString(dto)))
             .andDo(print())
             .andExpect(resultMatcher);
     }

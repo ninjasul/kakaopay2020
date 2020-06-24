@@ -1,8 +1,9 @@
-package com.kakaopay.assignment.domain;
+package com.kakaopay.assignment.protocol;
 
 import com.kakaopay.assignment.util.ManagementNumberUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +27,7 @@ class BodyTest {
     }
 
     @Test
+    @DisplayName("전문 길이 체크 테스트")
     void getLength() {
         int length = body.getLength();
 

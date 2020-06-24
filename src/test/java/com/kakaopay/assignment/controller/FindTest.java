@@ -6,6 +6,7 @@ import com.kakaopay.assignment.controller.dto.PayResponseDto;
 import com.kakaopay.assignment.service.PaymentHistoryService;
 import com.kakaopay.assignment.util.ManagementNumberUtil;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
@@ -40,6 +41,7 @@ class FindTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("결제 내역 조회 테스트")
     void find() throws Exception {
         ResultActions resultActions = assertGetResult(URL + mgmtNo, status().isOk());
         FoundPaymentDto foundPaymentDto = objectMapper.readValue(resultActions.andReturn().getResponse().getContentAsString(), FoundPaymentDto.class);
@@ -53,6 +55,7 @@ class FindTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("결제 내역 조회 실패 테스트")
     void find_forEntityNotFoundException() throws Exception {
         assertGetResult(URL + ManagementNumberUtil.generate(), status().isBadRequest());
     }

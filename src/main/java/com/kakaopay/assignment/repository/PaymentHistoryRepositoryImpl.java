@@ -1,6 +1,6 @@
 package com.kakaopay.assignment.repository;
 
-import com.kakaopay.assignment.domain.field.PaymentStatus;
+import com.kakaopay.assignment.protocol.field.PaymentStatus;
 import com.kakaopay.assignment.entity.PaymentHistory;
 import com.kakaopay.assignment.entity.QPaymentHistory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -9,18 +9,17 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.time.LocalDateTime;
 
 @Repository
 public class PaymentHistoryRepositoryImpl extends QuerydslRepositorySupport implements PaymentHistoryRepository {
+
+    private static final QPaymentHistory $ = QPaymentHistory.paymentHistory;
 
     @Autowired
     private EntityManager em;
 
     @Autowired
     private JPAQueryFactory queryFactory;
-
-    private static final QPaymentHistory $ = QPaymentHistory.paymentHistory;
 
     public PaymentHistoryRepositoryImpl(EntityManager em, JPAQueryFactory queryFactory) {
         super(PaymentHistory.class);
@@ -39,11 +38,11 @@ public class PaymentHistoryRepositoryImpl extends QuerydslRepositorySupport impl
     public PaymentHistory findCancellableByMgmtNo(String mgmtNo) {
         return queryFactory.selectFrom($)
             .where(QPaymentHistory.paymentHistory.mgmtNo.eq(mgmtNo)
-                    .and(
-                        QPaymentHistory.paymentHistory.status.eq(PaymentStatus.PAID)
-                            .or(QPaymentHistory.paymentHistory.status.eq(PaymentStatus.PARTIALLY_CANCELLED)
-                    )
-                )
+                       .and(
+                           QPaymentHistory.paymentHistory.status.eq(PaymentStatus.PAID)
+                               .or(QPaymentHistory.paymentHistory.status.eq(PaymentStatus.PARTIALLY_CANCELLED)
+                               )
+                       )
             )
             .fetchOne();
     }

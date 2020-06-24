@@ -1,4 +1,4 @@
-package com.kakaopay.assignment.domain;
+package com.kakaopay.assignment.protocol;
 
 import com.kakaopay.assignment.util.FieldUtil;
 

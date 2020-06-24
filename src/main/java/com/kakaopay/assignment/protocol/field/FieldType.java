@@ -1,4 +1,4 @@
-package com.kakaopay.assignment.domain.field;
+package com.kakaopay.assignment.protocol.field;
 
 public enum FieldType {
     NUMBER,

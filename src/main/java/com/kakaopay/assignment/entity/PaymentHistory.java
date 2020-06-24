@@ -1,31 +1,28 @@
 package com.kakaopay.assignment.entity;
 
 import com.kakaopay.assignment.controller.dto.CancelRequestDto;
-import com.kakaopay.assignment.domain.Body;
-import com.kakaopay.assignment.domain.Header;
-import com.kakaopay.assignment.domain.Protocol;
-import com.kakaopay.assignment.domain.field.PaymentStatus;
-import com.kakaopay.assignment.domain.field.RequestType;
+import com.kakaopay.assignment.protocol.Body;
+import com.kakaopay.assignment.protocol.Header;
+import com.kakaopay.assignment.protocol.Protocol;
+import com.kakaopay.assignment.protocol.field.PaymentStatus;
+import com.kakaopay.assignment.protocol.field.RequestType;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Entity
 @Table(
-    name="PAYMENT_HISTORY",
-    uniqueConstraints={
+    name = "PAYMENT_HISTORY",
+    uniqueConstraints = {
         @UniqueConstraint(
             columnNames = {"id", "mgmtNo"}
         )
     },
-    indexes={
-        @Index(name="IDX_PAYMENT_HISTORY", columnList="mgmtNo"),
+    indexes = {
+        @Index(name = "IDX_PAYMENT_HISTORY", columnList = "mgmtNo"),
     }
 )
 @NoArgsConstructor
@@ -81,20 +78,6 @@ public class PaymentHistory {
     @Transient
     private Body body;
 
-    public static PaymentHistory from(Protocol protocol, RequestType requestType) {
-        return new PaymentHistory(
-            protocol.getMgmtNo(),
-            protocol.getCardNo(),
-            protocol.getValidPeriod(),
-            protocol.getCvc(),
-            protocol.getInstallmentMonths(),
-            requestType,
-            protocol.getAmount(),
-            protocol.getVat(),
-            protocol.toString()
-        );
-    }
-
     public PaymentHistory(
         String mgmtNo,
         String cardNo,
@@ -133,7 +116,21 @@ public class PaymentHistory {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public boolean isCancelled() {
+    public static PaymentHistory from(Protocol protocol, RequestType requestType) {
+        return new PaymentHistory(
+            protocol.getMgmtNo(),
+            protocol.getCardNo(),
+            protocol.getValidPeriod(),
+            protocol.getCvc(),
+            protocol.getInstallmentMonths(),
+            requestType,
+            protocol.getAmount(),
+            protocol.getVat(),
+            protocol.toString()
+        );
+    }
+
+    public boolean isCompletelyCancelled() {
         return PaymentStatus.COMPLETELY_CANCELLED.equals(status) ||
             cancelledAmount >= paidAmount;
     }

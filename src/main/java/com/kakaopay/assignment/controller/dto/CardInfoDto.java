@@ -9,18 +9,18 @@ public class CardInfoDto {
     private String validPeriod;
     private String cvc;
 
+    @Builder
+    public CardInfoDto(String cardNo, String validPeriod, String cvc) {
+        this.cardNo = cardNo;
+        this.validPeriod = validPeriod;
+        this.cvc = cvc;
+    }
+
     public static CardInfoDto of(String cardNo, String validPeriod, String cvc) {
         return CardInfoDto.builder()
             .cardNo(cardNo)
             .validPeriod(validPeriod)
             .cvc(cvc)
             .build();
-    }
-
-    @Builder
-    public CardInfoDto(String cardNo, String validPeriod, String cvc) {
-        this.cardNo = cardNo;
-        this.validPeriod = validPeriod;
-        this.cvc = cvc;
     }
 }

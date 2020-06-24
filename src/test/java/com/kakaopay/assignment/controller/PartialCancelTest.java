@@ -1,34 +1,27 @@
 package com.kakaopay.assignment.controller;
 
-import com.kakaopay.assignment.controller.dto.*;
+import com.kakaopay.assignment.controller.dto.CancelRequestDto;
+import com.kakaopay.assignment.controller.dto.PayRequestDto;
+import com.kakaopay.assignment.controller.dto.PayResponseDto;
+import com.kakaopay.assignment.controller.dto.VatCalculable;
 import com.kakaopay.assignment.service.PaymentHistoryService;
-import com.kakaopay.assignment.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @Slf4j
 class PartialCancelTest extends BaseTest implements VatCalculable {
     private static final String URL = "/cancel";
-
-    private PayRequestDto payRequestDto;
-
-    private PayResponseDto payResponseDto;
-
-    private CancelRequestDto cancelRequestDto;
-
     @Autowired
     PaymentHistoryService service;
+    private PayRequestDto payRequestDto;
+    private PayResponseDto payResponseDto;
+    private CancelRequestDto cancelRequestDto;
 
     @Test
     @DisplayName("부분 취소 테스트 1")

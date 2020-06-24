@@ -1,7 +1,7 @@
 package com.kakaopay.assignment.util;
 
-import com.kakaopay.assignment.domain.field.FieldInfo;
-import com.kakaopay.assignment.domain.field.FieldMeta;
+import com.kakaopay.assignment.protocol.field.FieldInfo;
+import com.kakaopay.assignment.protocol.field.FieldMeta;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.kakaopay.assignment.domain.field.FieldAlignment.LEFT;
+import static com.kakaopay.assignment.protocol.field.FieldAlignment.LEFT;
 
 @Slf4j
 public class FieldUtil {

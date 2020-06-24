@@ -1,11 +1,11 @@
 package com.kakaopay.assignment.service;
 
 import com.kakaopay.assignment.controller.dto.CancelRequestDto;
-import com.kakaopay.assignment.controller.dto.PayRequestDto;
 import com.kakaopay.assignment.controller.dto.FoundPaymentDto;
+import com.kakaopay.assignment.controller.dto.PayRequestDto;
 import com.kakaopay.assignment.controller.dto.PayResponseDto;
-import com.kakaopay.assignment.domain.Protocol;
-import com.kakaopay.assignment.domain.field.RequestType;
+import com.kakaopay.assignment.protocol.Protocol;
+import com.kakaopay.assignment.protocol.field.RequestType;
 import com.kakaopay.assignment.entity.PaymentHistory;
 import com.kakaopay.assignment.repository.PaymentHistoryRepository;
 import com.kakaopay.assignment.util.StringUtils;
@@ -44,13 +44,13 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
 
         log.info("found paymentHistory: {}", StringUtils.toPrettyJson(paymentHistory));
 
-        if (paymentHistory.isCancelled()) {
+        if (paymentHistory.isCompletelyCancelled()) {
             log.info("isCancelled: true");
             throw new IllegalStateException("해당 결제는 이미 취소되었습니다.");
         }
 
         if (Objects.isNull(cancelRequestDto.getVat())) {
-            setVat(cancelRequestDto, paymentHistory);
+            setAvailableRequestVat(cancelRequestDto, paymentHistory);
         }
 
         if (!paymentHistory.canCancel(cancelRequestDto)) {
@@ -67,11 +67,11 @@ public class PaymentHistoryServiceImpl implements PaymentHistoryService {
         return PayResponseDto.from(cancelHistory);
     }
 
-    private void setVat(CancelRequestDto cancelRequestDto, PaymentHistory paymentHistory) {
+    private void setAvailableRequestVat(CancelRequestDto cancelRequestDto, PaymentHistory paymentHistory) {
         cancelRequestDto.setVat(
             Math.min(
                 paymentHistory.getRemainingVat(),
-                cancelRequestDto.getCalculatedVat(cancelRequestDto.getCancelAmount(), null)
+                cancelRequestDto.getCalculatedVat(cancelRequestDto.getCancelAmount(), cancelRequestDto.getVat())
             )
         );
     }

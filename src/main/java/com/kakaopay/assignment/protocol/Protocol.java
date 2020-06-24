@@ -1,8 +1,8 @@
-package com.kakaopay.assignment.domain;
+package com.kakaopay.assignment.protocol;
 
 import com.kakaopay.assignment.controller.dto.CancelRequestDto;
 import com.kakaopay.assignment.controller.dto.PayRequestDto;
-import com.kakaopay.assignment.domain.field.RequestType;
+import com.kakaopay.assignment.protocol.field.RequestType;
 import com.kakaopay.assignment.entity.PaymentHistory;
 import lombok.Builder;
 import lombok.Getter;

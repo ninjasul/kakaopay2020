@@ -28,7 +28,8 @@ public class CancelRequestDto implements VatCalculable {
     public CancelRequestDto(
         String mgmtNo,
         Integer cancelAmount,
-        Integer vat) {
+        Integer vat
+    ) {
         this.mgmtNo = mgmtNo;
         this.cancelAmount = cancelAmount;
         this.vat = vat;

@@ -7,6 +7,7 @@ import com.kakaopay.assignment.repository.PaymentHistoryRepository;
 import com.kakaopay.assignment.service.PaymentHistoryService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
@@ -40,6 +41,7 @@ class PayTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("결제 내역 insert 테스트")
     void insert() throws Exception {
         ResultActions resultActions = assertPostResult(URL, payRequestDto, status().isOk());
         resultActions.andExpect(jsonPath("mgmtNo").exists());
