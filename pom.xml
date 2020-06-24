@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.kakaopay</groupId>
-	<artifactId>assignment</artifactId>
+	<artifactId>payment</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>assignment</name>
-	<description>KakaoPay 2020 assignment</description>
+	<name>payment</name>
+	<description>KakaoPay 2020 payment assignment</description>
 
 	<properties>
 		<java.version>1.8</java.version>
