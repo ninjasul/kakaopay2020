@@ -19,4 +19,12 @@ public class PaymentControllerAdvice {
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler({Exception.class})
+    public ResponseEntity<PayFailResponseDto> handleInternalServerError() {
+        PayFailResponseDto responseBody = PayFailResponseDto.builder()
+            .httpStatus(HttpStatus.INTERNAL_SERVER_ERROR).build();
+
+        return new ResponseEntity<>(responseBody, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
