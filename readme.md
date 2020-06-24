@@ -13,7 +13,7 @@
       - 메소드: POST       
       - URL: http://localhost:8080/pay
       - 요청 헤더
-        - Content-Type: application/json;charset=UTF-8      
+        - Content-Type: application/json    
       - 요청 본문 예) 
         - {"cardNo":"1234123412","validPeriod":"0620","cvc":"999","installmentMonths":0,"paymentAmount":50000000,"vat":4545454}
 
@@ -21,7 +21,7 @@
       - 메소드: POST       
       - URL: http://localhost:8080/cancel
       - 요청 헤더
-        - Content-Type: application/json;charset=UTF-8      
+        - Content-Type: application/json     
       - 요청 본문 예) 
         - {"mgmtNo":"xg8Lf8ak0PCPPtHLZe9o","cancelAmount":1100,"vat":100}
       
